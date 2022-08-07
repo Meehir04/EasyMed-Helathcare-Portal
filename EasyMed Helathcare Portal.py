@@ -1,114 +1,141 @@
 from tkinter import *
-import psycopg2 as pg2
 from tkinter import messagebox
+import sqlite3
+
+
+conn=sqlite3.connect("DBMS BASED HEALTHCARE PORTAL.db")
+cur=conn.cursor()
+cur.execute("CREATE TABLE Registered_users (f_name varchar(20) not null, l_name varchar(20) not null, email varchar(50) not null, phone varchar(20) not null Unique, password varchar(20) not null)")
+conn.commit()
+conn.close()
+    
+conn=sqlite3.connect("DBMS BASED HEALTHCARE PORTAL.db")
+cur=conn.cursor()
+cur.execute(
+        "CREATE TABLE confirmed_appointments (f_name varchar(20) not null, l_name varchar(20) not null, email varchar(50) not null, phone varchar(20) not null Unique, doctor varchar(20) not null, specialist varchar(20),time time, date varchar(20) )")
+conn.commit()
+conn.close()
+
+
+
 
 
 def submit():
-    conn = pg2.connect(database='PROJECT LOGIN REG PAGE', user='postgres', password='password')
-    cur = conn.cursor()
-    cur.execute('SELECT email,password FROM registered_users')
-    b = cur.fetchall()
-    lenn = len(b)
-
-    for i in range(lenn):
-
-        if b[i][0] == e1.get() and b[i][1] == e2.get():
-            print(b[i][0])
-            print(b[i][1])
-            conn.close()
-            #messagebox.showinfo('info', 'login successfully')
-            booking = Tk()
-            booking.title('Book An Appointment')
-            booking.geometry("350x500")
-            
-            options_list = [
-                "Oncology","Neurology","Cardiology","Gastroenterology","Ophthalmology","Urology"
-            ]
-            
-            day_list=[ 
-                "Monday", 'Tuesday', "Wednesday","Thursday","Friday" 
-            ]
-            
-            time = ["10:00 AM","11:00 AM", "12:00 PM", "1:00PM"]
-            
-            Doctor =[ "Dr. Ashu Agarwal","Dr Sanjay Singh"]
-            
-            def show(value_inside):
-#                 mylabel1 = Label(booking,text = value_inside1.get()).pack()
-            
-                if value_inside1.get() == "Oncology":
-                    value_inside4 = StringVar(booking)
-                    value_inside4.set("Select Doctor")
-                    drop4= OptionMenu(booking, value_inside4, *Doctor)
-                    drop4.pack(ipady=5,ipadx=40)
-#                     mylabel4 = Label(booking,text = value_inside4.get()).pack()
+    
+    if e1.get() == '' or e2.get() == '' :
+        messagebox.showinfo('error', "Enter a Valid i'd or Password")
+        
+    else:    
+        conn=sqlite3.connect("DBMS BASED HEALTHCARE PORTAL.db")
+        cur=conn.cursor()
+        cur.execute('SELECT email,password FROM registered_users')
+        b = cur.fetchall()
+        lenn = len(b)
                     
-                    value_inside2 = StringVar(booking)
-                    value_inside2.set("Select Day")
-                    drop2= OptionMenu(booking, value_inside2, *day_list)
-                    drop2.pack(ipady=5,ipadx=40)
-#                     mylabel2 = Label(booking,text = value_inside2.get()).pack()
+        for i in range(1):
+            if b[i][0] != e1.get() or b[i][1] != e2.get():
+                messagebox.showinfo('error', "Enter a Valid i'd or Password")
+
+            elif b[i][0] == e1.get() and b[i][1] == e2.get():
+                print(b[i][0])
+                print(b[i][1])
+                conn.close()
+                messagebox.showinfo('info', 'login successfully')
+                booking = Tk()
+                booking.title('Book An Appointment')
+                booking.geometry("350x200")
             
-                    value_inside3 = StringVar(booking)
-                    value_inside3.set("Time")
-                    drop3 = OptionMenu(booking, value_inside3, *time)
-                    drop3.pack(ipady=5,ipadx=40)
-#                     mylabel3 = Label(booking,text = value_inside3.get()).pack()
+                options_list = [
+                    "Oncology","Neurology","Cardiology","Gastroenterology","Ophthalmology","Urology"
+                ]
+            
+                day_list=[ 
+                    "Monday", 'Tuesday', "Wednesday","Thursday","Friday" 
+                ]
+            
+                time = ["10:00 AM","11:00 AM", "12:00 PM", "1:00PM"]
+
+
+                Doctor =[ "Dr. Ashu Agarwal","Dr. Sanjay Singh","Dr. Ankit Sharma"]
+            
+                def show(value_inside):
+                    mylabel1 = Label(booking,text = value_inside1.get()).pack()
+            
+                    if value_inside1.get() == "Oncology" or "Neurology" or "Cardiology" or "Gastroenterology" or "Ophthalmology" or "Urology" :
+                        value_inside4 = StringVar(booking)
+                        value_inside4.set("Select Doctor")
                     
-                    def final():
-                        conn5 = pg2.connect(database='PROJECT LOGIN REG PAGE', user='postgres', password='password')
-                        cur5 = conn5.cursor()
-                        cur5.execute('SELECT * FROM registered_users')
-                        c = cur5.fetchall()
-                        for i in range(len(c)):
-                            if c[i][2]==e1.get():
-                                q1=c[i][0]
-                                q2=c[i][1]
-                                q3=c[i][3]
-                        conn5.close()
+                        drop4= OptionMenu(booking, value_inside4, *Doctor)
+                        drop4.pack(ipady=5,ipadx=40)
+                        drop4.place(x=40,y=70)
+                    
+                        value_inside2 = StringVar(booking)
+                        value_inside2.set("Select Day")
+                        drop2= OptionMenu(booking, value_inside2, *day_list)
+                        drop2.pack(ipady=5,ipadx=40)
+                        drop2.place(x=210,y=70)
+            
+                        value_inside3 = StringVar(booking)
+                        value_inside3.set("Time")
+                        drop3 = OptionMenu(booking, value_inside3, *time)
+                        drop3.pack(ipady=5,ipadx=40)
+                        drop3.place(x=210,y=110)
+                    
+                        def final():
+                            conn5 = sqlite3.connect("DBMS BASED HEALTHCARE PORTAL.db")
+                            cur5 = conn5.cursor()
+                            cur5.execute('SELECT * FROM registered_users')
+                            c = cur5.fetchall()
+            
+                            for i in range(len(c)):
+                                if c[i][2]==e1.get():
+                                    q1=c[i][0]
+                                    q2=c[i][1]
+                                    q3=c[i][3]
+                            conn5.close()
                         
-                        conn3 = pg2.connect(database='PROJECT LOGIN REG PAGE', user='postgres', password='password')
-                        cur3 = conn3.cursor()
-                        cur3.execute(
-                        f"""INSERT INTO confirmed_appointments Values ('{q1}', '{q2}', '{e1.get()}', '{q3}','{value_inside4.get()}','{value_inside1.get()}',
-                            '{value_inside3.get()}','{value_inside2.get()}')""")
-                        conn3.commit()
+                            conn3 = sqlite3.connect("DBMS BASED HEALTHCARE PORTAL.db")
+                            cur3 = conn3.cursor()
+                            cur3.execute(
+                            f"""INSERT INTO confirmed_appointments Values ('{q1}', '{q2}', '{e1.get()}', '{q3}','{value_inside4.get()}','{value_inside1.get()}',
+                                '{value_inside3.get()}','{value_inside2.get()}')""")
+                            conn3.commit()
                      
-                        conn3.close()
+                            conn3.close()
                         
-                        messagebox.showinfo('info', f'Your Appointment has been scheduled on {value_inside2.get()} {value_inside3.get()}')
+                            messagebox.showinfo('info', f'Your Appointment has been scheduled on {value_inside2.get()} {value_inside3.get()}')
                         
-                        booking.destroy()
+                            booking.destroy()
                     
-                    
-                    submit_button2 = Button(booking,text="Submit",command=final)
-                    submit_button2.pack(pady=20,padx=10)
-                    
-                    
-            
-            value_inside1 = StringVar(booking)
-            value_inside1.set("Select An Specialist")
-            drop1= OptionMenu(booking, value_inside1, *options_list, command=show)
-            drop1.pack(ipady=5,ipadx=40)                
-            
-            
-#             submit_button= Button(booking,text="Submit", command=show)
-#             submit_button.pack(pady=20,padx=10)
 
+                        submit_button2 = Button(booking,text="Submit",fg='white',bg='black',command=final)
+                        submit_button2.pack(pady=20,padx=10)
+                        submit_button2.place(x=150,y=150)
+                    
+                    
+                value_inside1 = StringVar(booking)
+                value_inside1.set("Select An Specialist")
+                drop1= OptionMenu(booking, value_inside1, *options_list, command=show)
+                drop1.pack(ipady=5,ipadx=40) 
+                
 
 def reset_password():
+
     def reset_submit():
-        messagebox.showinfo('info', 'successfully registered')
+        if q1.get() == '' or q2.get() == '' or q3.get() == '' or q4.get() == '' or q5.get() == '':
+            messagebox.showinfo('Error', 'Enter a Valid Details')
+        else:
+            messagebox.showinfo('info', 'Successfully Registered')
 
-        conn1 = pg2.connect(database='PROJECT LOGIN REG PAGE', user='postgres', password='password')
-        cur1 = conn1.cursor()
-        cur1.execute(
-            f"INSERT INTO registered_users Values ('{q1.get()}', '{q2.get()}', '{q3.get()}', '{q4.get()}', '{q5.get()}')")
-        conn1.commit()
+            conn1 = sqlite3.connect("DBMS BASED HEALTHCARE PORTAL.db")
+            cur1 = conn1.cursor()
+            cur1.execute(
+                f"INSERT INTO registered_users Values ('{q1.get()}', '{q2.get()}', '{q3.get()}', '{q4.get()}', '{q5.get()}')")
+            conn1.commit()
 
-        cur1.close()
+            cur1.close()
 
-        s.destroy()
+            s.destroy()
 
     s = Tk()
     s.title('NEW REGISTER')
@@ -139,20 +166,22 @@ def reset_password():
     q5 = Entry(s)
     q5.place(x=110, y=100)
 
-    w1 = Button(s, text='Submit', fg='white', bg='black', command=reset_submit)  ####command=reset_submit
+    w1 = Button(s, text='Submit', fg='white', bg='black', command=reset_submit) 
     w1.place(x=370, y=140)
 
     s.mainloop()
 
 
-def registered_users():
+def confirmed_appointments():
     e = 40
     n = Tk()
-    n.title('PROJECT LOGIN REG PAGE')
-    n.geometry("400x700")
-    conn = pg2.connect(database='PROJECT LOGIN REG PAGE', user='postgres', password='password')
+    n.title('DBMS BASED HEALTHCARE PORTAL')
+    L1 = Label(n, text='patient_name  |  \t      Email  \t      |   password   |    Dr_name    |    specialist    |    time    |    day', fg='white', bg='black')
+    L1.place(x=40, y=10) 
+    n.geometry("600x300")
+    conn = sqlite3.connect("DBMS BASED HEALTHCARE PORTAL.db")
     cur = conn.cursor()
-    cur.execute('SELECT *FROM registered_users')
+    cur.execute('SELECT * FROM confirmed_appointments')
     b = cur.fetchall()
     for i in b:
         j = Button(n, text=i, fg='white', bg='black')
@@ -163,7 +192,7 @@ def registered_users():
 def password_pop():
     def get_password():
 
-        conn = pg2.connect(database='PROJECT LOGIN REG PAGE', user='postgres', password='password')
+        conn = sqlite3.connect("DBMS BASED HEALTHCARE PORTAL.db")
         cur = conn.cursor()
         cur.execute('SELECT email,password FROM registered_users')
         b = cur.fetchall()
@@ -188,7 +217,7 @@ def password_pop():
     z1.place(x=10, y=6)
     f1 = Entry(z)
     f1.place(x=55, y=6)
-    v1 = Button(z, text='Submit', fg='white', bg='black', command=get_password)  ####command=submit
+    v1 = Button(z, text='Submit', fg='white', bg='black', command=get_password) 
     v1.place(x=70, y=40)
 
 
@@ -206,13 +235,13 @@ L2.place(x=95, y=45)
 e2 = Entry()
 e2.place(x=170, y=45)
 
-b1 = Button(a, text='Log In', fg='white', bg='black', command=submit)  ####command=submit
+b1 = Button(a, text='Log In', fg='white', bg='black', command=submit)  
 b1.place(x=245, y=75)
-b2 = Button(a, text='Sign up', fg='white', bg='black', command=reset_password)  ####command=forget pswd
+b2 = Button(a, text='Sign up', fg='white', bg='black', command=reset_password) 
 b2.place(x=24, y=100)
-b3 = Button(a, text='Forgotten Password', fg='white', bg='black', command=password_pop)  #### command= reg
+b3 = Button(a, text='Forgotten Password', fg='white', bg='black', command=password_pop) 
 b3.place(x=24, y=130)
-b4 = Button(a, text='registered_users', fg='white', bg='black', command=registered_users)
-b4.place(x=280, y=150)
+b4 = Button(a, text='confirmed_appointments', fg='white', bg='black', command=confirmed_appointments)
+b4.place(x=230, y=150)
 
 a.mainloop()
